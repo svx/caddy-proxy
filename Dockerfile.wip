@@ -5,8 +5,8 @@
 FROM alpine:latest
 
 ARG container_version=0.0.0.0
-ENV DOCKER_GEN_VERSION 0.7.3
-
+ENV DOCKER_GEN_VERSION=0.7.3
+ENV FOREGO_VERSION=0.16.1
 
 LABEL maintainer "Sven <sven@testthedocs.org>" \
     org.label-schema.vendor = "TestTheDocs" \
@@ -17,7 +17,6 @@ LABEL maintainer "Sven <sven@testthedocs.org>" \
 RUN builddeps=' \
         tar \
         curl \
-	wget \
 	bash \
         '\
         && apk --no-cache add \
@@ -32,16 +31,10 @@ RUN builddeps=' \
 	&& chmod 0755 /usr/bin/caddy \
         && /usr/bin/caddy -version \
 	&& curl --silent --show-error --fail --location https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
-	        | tar xzv --no-same-owner -C /usr/local/bin
-	#&& apk del --purge $builddeps
-
-# Install Forego
-ADD https://github.com/jwilder/forego/releases/download/v0.16.1/forego /usr/local/bin/forego
-RUN chmod u+x /usr/local/bin/forego
-
-#RUN wget https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
-    #    && tar -C /usr/local/bin -xvzf docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
-    #&& rm /docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz
+	        | tar xzv --no-same-owner -C /usr/local/bin \
+	&& curl --silent --show-error --fail --location https://github.com/jwilder/forego/releases/download/v$FOREGO_VERSION/forego -o /usr/local/bin/forego \
+	&& chmod u+x /usr/local/bin/forego \
+	&& apk del --purge $builddeps
 
 COPY Procfile /srv/Procfile
 COPY caddyfile.tpl /srv/caddyfile.tpl
