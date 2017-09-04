@@ -10,7 +10,7 @@ ENV DOCKER_GEN_VERSION 0.7.3
 
 LABEL maintainer "Sven <sven@testthedocs.org>" \
     org.label-schema.vendor = "TestTheDocs" \
-    caddy_version="0.10.4" \
+    caddy_version="0.10.7" \
     architecture="amd64" \
     build_version="$container_version"
 
